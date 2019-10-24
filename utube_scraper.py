@@ -21,7 +21,7 @@ def main():
     api_version = "v3"
     #client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
 
-    # Ask for channel name
+    # Ask for channel name ,test
     req_chnl = input("Which YouTube Channel do you want? ")
     print(req_chnl)
 
