@@ -33,23 +33,12 @@ def main():
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey=cfg['api_key'])
 
     # Get ID based on channel name
-    request = youtube.channels().list(
-        part="id",
-        forUsername=req_chnl
+    request = youtube.search().list(
+        part="snippet",
+        q=req_chnl
     )
     response = request.execute()
     print(response)
-
-
-    # Get playlist id
-    # easy german UUbxb2fqe9oNgglAoYqsYOtQ
-    #test
-    request = youtube.channels().list(
-        part="contentDetails",
-        id="UCbxb2fqe9oNgglAoYqsYOtQ"
-    )
-    playlist_id = request.execute()
-    print(playlist_id)
 
     # Get video upload list UUqmQ1b96-PNH4coqgHTuTlA
     # UUqmQ1b96-PNH4coqgHTuTlA tested
