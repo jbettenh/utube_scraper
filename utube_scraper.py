@@ -6,6 +6,7 @@ import yaml
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
+import json
 
 scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
 
@@ -13,6 +14,8 @@ def main():
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+    channels = []
+    videos = []
 
     with open("config.yaml", 'r') as ymlfile:
         cfg = yaml.safe_load(ymlfile)
@@ -23,7 +26,6 @@ def main():
 
     # Ask for channel name ,test
     req_chnl = input("Which YouTube Channel do you want? ")
-    print(req_chnl)
 
 
     #flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
@@ -33,21 +35,35 @@ def main():
     youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey=cfg['api_key'])
 
     # Get ID based on channel name
-    request = youtube.search().list(
+    search_response = youtube.search().list(
         part="snippet",
         q=req_chnl
-    )
-    response = request.execute()
-    print(response)
+    ).execute()
+
+    # Add each result to the appropriate list, and then display the lists of
+    # matching videos, channels, and playlists.
+    for search_result in search_response.get('items', []):
+        if search_result['id']['kind'] == 'youtube#video':
+            videos.append('%s (%s)' % (search_result['snippet']['title'],
+                                       search_result['id']['videoId']))
+        elif search_result['id']['kind'] == 'youtube#channel':
+            channels.append('%s (%s)' % (search_result['snippet']['title'],
+                                         search_result['id']['channelId']))
+    # print("JSON Respone: " + search_response)
+    print('Channels Found:\n', '\n'.join(channels), '\n')
+
+    print('Videos:\n', '\n'.join(videos), '\n')
+
+
 
     # Get video upload list UUqmQ1b96-PNH4coqgHTuTlA
     # UUqmQ1b96-PNH4coqgHTuTlA tested
-    request = youtube.playlistItems().list(
+    video_response = youtube.playlistItems().list(
         part="snippet",
         playlistId="UUbxb2fqe9oNgglAoYqsYOtQ"
-    )
-    upload_list = request.execute()
-    print(upload_list)
+    ).execute()
+
+    #print("JSON Response: " + video_json)
 
     # List titles in file
 
