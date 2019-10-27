@@ -25,7 +25,7 @@ def main():
     #client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
 
     # Ask for channel name ,test
-    req_chnl = input("Which YouTube Channel do you want? ")
+    req_chnl = input("Which YouTube Channel do you want?\n")
 
 
     #flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
@@ -43,27 +43,31 @@ def main():
     # Add each result to the appropriate list, and then display the lists of
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
-        if search_result['id']['kind'] == 'youtube#video':
-            videos.append('%s (%s)' % (search_result['snippet']['title'],
-                                       search_result['id']['videoId']))
-        elif search_result['id']['kind'] == 'youtube#channel':
-            channels.append('%s (%s)' % (search_result['snippet']['title'],
-                                         search_result['id']['channelId']))
-    # print("JSON Respone: " + search_response)
-    print('Channels Found:\n', '\n'.join(channels), '\n')
+       if search_result['id']['kind'] == 'youtube#channel':
+        channels.append('%s (%s)' % (search_result['snippet']['title'],
+                                     search_result['id']['channelId']))
 
-    print('Videos:\n', '\n'.join(videos), '\n')
+    print("\nChannels Found:\n", '\n'.join(channels), '\n')
 
 
-
-    # Get video upload list UUqmQ1b96-PNH4coqgHTuTlA
-    # UUqmQ1b96-PNH4coqgHTuTlA tested
+    # Get video upload list
+    # "UUqmQ1b96-PNH4coqgHTuTlA" - tested
+    # "UUbxb2fqe9oNgglAoYqsYOtQ" - easy german
     video_response = youtube.playlistItems().list(
         part="snippet",
         playlistId="UUbxb2fqe9oNgglAoYqsYOtQ"
+        #playlistID=channels['id']['channelId']
     ).execute()
 
-    #print("JSON Response: " + video_json)
+
+
+    for playlist_result in video_response.get('items', []):
+        if playlist_result['kind'] == 'youtube#playlistItem':
+            videos.append('%s' % (playlist_result['snippet']['title']))
+            #videos.append('%s (%s)' % (playlist_result['snippet']['title'],
+             #                          playlist_result['resourceId']['videoId']))
+
+    print("Videos:\n", '\n'.join(videos), '\n')
 
     # List titles in file
 
