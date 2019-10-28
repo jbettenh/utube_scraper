@@ -70,7 +70,9 @@ def main():
     print("Videos:\n", '\n'.join(videos), '\n')
 
     # List titles in file
-
+    with open('video.txt', 'w') as file:
+        # file.write(json.dumps(videos))
+        json.dump(videos, file, indent=2)
 
 if __name__ == "__main__":
     main()
