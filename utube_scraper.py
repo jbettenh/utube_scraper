@@ -15,6 +15,7 @@ def main():
     # *DO NOT* leave this option enabled in production.
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
     channels = []
+    uploads = []
     videos = []
 
     with open("config.yaml", 'r') as ymlfile:
@@ -39,7 +40,7 @@ def main():
         part="snippet",
         q=req_chnl
     ).execute()
-    print(search_response)
+
     # Add each result to the appropriate list, and then display the lists of
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
@@ -47,18 +48,28 @@ def main():
            channels.append('%s (%s)' % (search_result['snippet']['title'],
                                      search_result['id']['channelId']))
            fnd_id=search_result['id']['channelId']
-
+    print(search_response)
     print("\nChannels Found:\n", '\n'.join(channels), '\n')
-    print(fnd_id)
 
-    # Add step to go from found channel id to all videos, later by playlists, later new functions
+    # Get Uploads ID
+    uploads_response = youtube.channels().list(
+        part="contentDetails",
+        id=fnd_id
+    ).execute()
+    print("Uploads Response")
+    print(uploads_response)
+
+    for uploads_result in uploads_response.get('items', []):
+        #if uploads_result['kind'] == 'youtube#channel':
+         #  uploads.append('%s' % (uploads_result['contentDetails']['relatedPlaylists']['uploads']))
+        uploads_id = uploads_result['contentDetails']['relatedPlaylists']['uploads']
+
+    print("Uploads ID:")
+    print(uploads_id)
     # Get video upload list
-    # "UUqmQ1b96-PNH4coqgHTuTlA" - tested
-    # "UUbxb2fqe9oNgglAoYqsYOtQ" - easy german
     video_response = youtube.playlistItems().list(
         part="snippet",
-        playlistId="UUbxb2fqe9oNgglAoYqsYOtQ"
-        # playlistID=fnd_id
+        playlistId=uploads_id
     ).execute()
 
     for playlist_result in video_response.get('items', []):
