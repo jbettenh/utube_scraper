@@ -39,27 +39,27 @@ def main():
         part="snippet",
         q=req_chnl
     ).execute()
-
+    print(search_response)
     # Add each result to the appropriate list, and then display the lists of
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
-       if search_result['id']['kind'] == 'youtube#channel':
-        channels.append('%s (%s)' % (search_result['snippet']['title'],
+        if search_result['id']['kind'] == 'youtube#channel':
+           channels.append('%s (%s)' % (search_result['snippet']['title'],
                                      search_result['id']['channelId']))
+           fnd_id=search_result['id']['channelId']
 
     print("\nChannels Found:\n", '\n'.join(channels), '\n')
+    print(fnd_id)
 
-
+    # Add step to go from found channel id to all videos, later by playlists
     # Get video upload list
     # "UUqmQ1b96-PNH4coqgHTuTlA" - tested
     # "UUbxb2fqe9oNgglAoYqsYOtQ" - easy german
     video_response = youtube.playlistItems().list(
         part="snippet",
         playlistId="UUbxb2fqe9oNgglAoYqsYOtQ"
-        #playlistID=channels['id']['channelId']
+        # playlistID=fnd_id
     ).execute()
-
-
 
     for playlist_result in video_response.get('items', []):
         if playlist_result['kind'] == 'youtube#playlistItem':
