@@ -51,7 +51,7 @@ def main():
     print("\nChannels Found:\n", '\n'.join(channels), '\n')
     print(fnd_id)
 
-    # Add step to go from found channel id to all videos, later by playlists
+    # Add step to go from found channel id to all videos, later by playlists, later new functions
     # Get video upload list
     # "UUqmQ1b96-PNH4coqgHTuTlA" - tested
     # "UUbxb2fqe9oNgglAoYqsYOtQ" - easy german
