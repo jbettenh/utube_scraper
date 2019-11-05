@@ -64,12 +64,11 @@ def main():
          #  uploads.append('%s' % (uploads_result['contentDetails']['relatedPlaylists']['uploads']))
         uploads_id = uploads_result['contentDetails']['relatedPlaylists']['uploads']
 
-    print("Uploads ID:")
-    print(uploads_id)
     # Get video upload list
     video_response = youtube.playlistItems().list(
         part="snippet",
-        playlistId=uploads_id
+        playlistId=uploads_id,
+        maxResults=50
     ).execute()
 
     for playlist_result in video_response.get('items', []):
