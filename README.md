@@ -6,6 +6,7 @@ YouTube Data API V3
 
 
 ## History
+October 24, 2019 - Initial commit
 
 
 
