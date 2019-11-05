@@ -1,5 +1,5 @@
 ## Utube Scraper
-Instead of webscraping YouTube, find information using YouTube API V3
+Use the YouTube Data API V3 to scrape YouTube for information.
 
 ## Description
 YouTube Data API V3
