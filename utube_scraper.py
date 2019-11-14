@@ -1,5 +1,5 @@
 #! python 3
-# This will save all video titles from a Youtube to a text file.
+# This will save all video titles from a YouTube channel to a text file.
 
 import os
 import yaml
@@ -28,8 +28,6 @@ def get_auth_service():
 
 
 def get_channel_id():
-    channels = []
-
     # Ask for channel name ,test
     req_chnl = input("Which YouTube Channel do you want?\n")
 
@@ -43,15 +41,14 @@ def get_channel_id():
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
         if search_result['id']['kind'] == 'youtube#channel':
-           channels.append('%s (%s)' % (search_result['snippet']['title'],
-                                     search_result['id']['channelId']))
+           #channels.append('%s (%s)' % (search_result['snippet']['title'],
+                                     #search_result['id']['channelId']))
            return search_result['id']['channelId']
-    print("\nChannels Found:\n", '\n'.join(channels), '\n')
+
 
     return None
 
 def get_uploads_list(fnd_id):
-    uploads = []
     # Get Uploads ID
     uploads_response = youtube.channels().list(
         part="contentDetails",
@@ -60,14 +57,10 @@ def get_uploads_list(fnd_id):
 
     for uploads_result in uploads_response.get('items', []):
         #if uploads_result['kind'] == 'youtube#channel':
-         #  uploads.append('%s' % (uploads_result['contentDetails']['relatedPlaylists']['uploads']))
         return uploads_result['contentDetails']['relatedPlaylists']['uploads']
-
     return None
 
 def get_video_list(uploads_id):
-   # videos = []
-
     # Get video upload list
     video_response = youtube.playlistItems().list(
         part="snippet",
@@ -77,17 +70,14 @@ def get_video_list(uploads_id):
 
     for playlist_result in video_response.get('items', []):
         if playlist_result['kind'] == 'youtube#playlistItem':
-            # videos.append('%s' % (playlist_result['snippet']['title']))
-            return playlist_result ['snippet']['title']
-            #videos.append('%s (%s)' % (playlist_result['snippet']['title'],
-             #                          playlist_result['resourceId']['videoId']))
+            return playlist_result['snippet']['title']
+            # return (playlist_result['snippet']['title'],playlist_result['resourceId']['videoId'])
 
     return None
 
 def output_text(vid_txt):
     # List titles in file
     with open('video.txt', 'w') as file:
-        # file.write(json.dumps(videos))
         json.dump(vid_txt, file, indent=2)
 
     return None
