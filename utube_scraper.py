@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+
 def get_auth_service():
     # Disable OAuthlib's HTTPS verification when running locally.
     # *DO NOT* leave this option enabled in production.
@@ -43,10 +44,10 @@ def get_channel_id():
         if search_result['id']['kind'] == 'youtube#channel':
            #channels.append('%s (%s)' % (search_result['snippet']['title'],
                                      #search_result['id']['channelId']))
-           return search_result['id']['channelId']
-
+            return search_result['id']['channelId']
 
     return None
+
 
 def get_uploads_list(fnd_id):
     # Get Uploads ID
@@ -56,11 +57,13 @@ def get_uploads_list(fnd_id):
     ).execute()
 
     for uploads_result in uploads_response.get('items', []):
-        #if uploads_result['kind'] == 'youtube#channel':
-        return uploads_result['contentDetails']['relatedPlaylists']['uploads']
+        if uploads_result['kind'] == 'youtube#channel':
+            return uploads_result['contentDetails']['relatedPlaylists']['uploads']
     return None
 
+
 def get_video_list(uploads_id):
+    videos = []
     # Get video upload list
     video_response = youtube.playlistItems().list(
         part="snippet",
@@ -68,12 +71,12 @@ def get_video_list(uploads_id):
         maxResults=50
     ).execute()
 
-    for playlist_result in video_response.get('items', []):
-        if playlist_result['kind'] == 'youtube#playlistItem':
-            return playlist_result['snippet']['title']
-            # return (playlist_result['snippet']['title'],playlist_result['resourceId']['videoId'])
+    for video_result in video_response.get('items', []):
+        if video_result['kind'] == 'youtube#playlistItem':
+            videos.append(video_result['snippet']['title'])
 
-    return None
+    return videos
+
 
 def output_text(vid_txt):
     # List titles in file
@@ -81,6 +84,7 @@ def output_text(vid_txt):
         json.dump(vid_txt, file, indent=2)
 
     return None
+
 
 if __name__ == "__main__":
     video_list = []
