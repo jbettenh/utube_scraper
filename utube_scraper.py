@@ -3,12 +3,28 @@
 
 import os
 import yaml
-import googleapiclient.discovery
-import googleapiclient.errors
 import json
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google_auth_oauthlib.flow import InstalledAppFlow
 
-scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
-def get_service():
+def get_auth_service():
+    # Disable OAuthlib's HTTPS verification when running locally.
+    # *DO NOT* leave this option enabled in production.
+    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+    with open("config.yaml", 'r') as ymlfile:
+        cfg = yaml.safe_load(ymlfile)
+
+    SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
+    API_SERVICE_NAME = "youtube"
+    API_VERSION = "v3"
+
+    # flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+    # client_secrets_file, scopes)
+    # credentials = flow.run_console()
+
+    return build(API_SERVICE_NAME, API_VERSION, developerKey=cfg['api_key'])
 
 
 def get_channel_id():
@@ -79,22 +95,7 @@ def output_text(vid_txt):
 if __name__ == "__main__":
     video_list = []
     # main()
-    # Disable OAuthlib's HTTPS verification when running locally.
-    # *DO NOT* leave this option enabled in production.
-    os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
-    with open("config.yaml", 'r') as ymlfile:
-        cfg = yaml.safe_load(ymlfile)
-
-    api_service_name = "youtube"
-    api_version = "v3"
-    # client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
-
-    # flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-    # client_secrets_file, scopes)
-    # credentials = flow.run_console()
-    # youtube = googleapiclient.discovery.build(api_service_name, api_version, credentials=credentials)
-    youtube = googleapiclient.discovery.build(api_service_name, api_version, developerKey=cfg['api_key'])
+    youtube = get_auth_service()
     channel_id = get_channel_id()
     uploads_playlist_id = get_uploads_list(channel_id)
     videos_list = get_video_list(uploads_playlist_id)
