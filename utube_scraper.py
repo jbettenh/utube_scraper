@@ -65,6 +65,8 @@ def get_uploads_list(fnd_id):
 def get_video_list(uploads_id):
     videos = []
     next_page_token = ''
+    print('Upload ID: ' + uploads_id)
+    print('Next page token: \n')
     # Get video upload list
     while next_page_token is not None:
         video_response = youtube.playlistItems().list(
@@ -74,16 +76,18 @@ def get_video_list(uploads_id):
             pageToken=next_page_token
         ).execute()
 
-        for video_result in video_response.get('items', []):
+        for video_result in video_response['items']:
             if video_result['kind'] == 'youtube#playlistItem':
                 videos.append(video_result['snippet']['title'])
-        next_page_token = video_response['nextPageToken']
+        next_page_token = video_response.get('nextPageToken')
+
+        print(next_page_token)
     return videos
 
 
 def output_text(vid_txt):
     # List titles in file
-    with open('video.txt', 'w') as file:
+    with open('videos.txt', 'w') as file:
         json.dump(vid_txt, file, indent=2)
 
     return None
@@ -99,6 +103,7 @@ if __name__ == "__main__":
         if uploads_playlist_id:
             videos_list = get_video_list(uploads_playlist_id)
             output_text(videos_list)
+            print('Video list written to file.')
         else:
             print('There is no uploaded videos playlist for this user.')
     except HttpError as e:
