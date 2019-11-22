@@ -29,7 +29,8 @@ def get_auth_service():
 
 
 def get_channel_id():
-    # Ask for channel name ,test
+    # Ask for channel name
+    channels = []
     req_chnl = input("Which YouTube Channel do you want?\n")
 
     # Get ID based on channel name
@@ -42,8 +43,7 @@ def get_channel_id():
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
         if search_result['id']['kind'] == 'youtube#channel':
-           #channels.append('%s (%s)' % (search_result['snippet']['title'],
-                                     #search_result['id']['channelId']))
+            print('Found Channel: ' + search_result['snippet']['title'])
             return search_result['id']['channelId']
 
     return None
