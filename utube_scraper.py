@@ -43,7 +43,8 @@ def get_channel_id():
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
         if search_result['id']['kind'] == 'youtube#channel':
-            channels = {'channel_title': search_result['snippet']['title'], 'channel_id': search_result['id']['channelId']}
+            channels = {'channel_title': search_result['snippet']['title'],
+                        'channel_id': search_result['id']['channelId']}
             print('Found Channel: ' + channels['channel_title'])
         return channels
 
@@ -95,11 +96,9 @@ def output_text(vid_txt):
 
 
 if __name__ == "__main__":
-    channel_info = []
     youtube = get_auth_service()
 
     channel_info = get_channel_id()
-
 
     try:
         channel_info['uploads_id'] = get_uploads_list(channel_info['channel_id'])
