@@ -43,8 +43,9 @@ def get_channel_id():
     # matching videos, channels, and playlists.
     for search_result in search_response.get('items', []):
         if search_result['id']['kind'] == 'youtube#channel':
-            print('Found Channel: ' + search_result['snippet']['title'])
-            return search_result['id']['channelId']
+            channels = {'channel_title': search_result['snippet']['title'], 'channel_id': search_result['id']['channelId']}
+            print('Found Channel: ' + channels['channel_title'])
+        return channels
 
     return None
 
@@ -95,14 +96,18 @@ def output_text(vid_txt):
 
 if __name__ == "__main__":
     video_list = []
+    channel_info = []
     youtube = get_auth_service()
-    channel_id = get_channel_id()
+
+    channel_info = get_channel_id()
+
 
     try:
-        uploads_playlist_id = get_uploads_list(channel_id)
-        if uploads_playlist_id:
-            videos_list = get_video_list(uploads_playlist_id)
-            output_text(videos_list)
+        channel_info['uploads_id'] = get_uploads_list(channel_info['channel_id'])
+        if channel_info['uploads_id']:
+            channel_info['videos'] = get_video_list(channel_info['uploads_id'])
+            #videos_list = get_video_list(channel_info['uploads_id'])
+            output_text(channel_info)
             print('Video list written to file.')
         else:
             print('There is no uploaded videos playlist for this user.')
