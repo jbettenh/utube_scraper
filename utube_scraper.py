@@ -95,7 +95,6 @@ def output_text(vid_txt):
 
 
 if __name__ == "__main__":
-    video_list = []
     channel_info = []
     youtube = get_auth_service()
 
@@ -106,7 +105,6 @@ if __name__ == "__main__":
         channel_info['uploads_id'] = get_uploads_list(channel_info['channel_id'])
         if channel_info['uploads_id']:
             channel_info['videos'] = get_video_list(channel_info['uploads_id'])
-            #videos_list = get_video_list(channel_info['uploads_id'])
             output_text(channel_info)
             print('Video list written to file.')
         else:
