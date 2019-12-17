@@ -95,9 +95,7 @@ def output_text(vid_txt):
     return None
 
 
-if __name__ == "__main__":
-    youtube = get_auth_service()
-
+def main():
     channel_info = get_channel_id()
 
     try:
@@ -110,3 +108,8 @@ if __name__ == "__main__":
             print('There is no uploaded videos playlist for this user.')
     except HttpError as e:
         print('An HTTP error %d occurred:\n%s' % (e.resp.status, e.content))
+
+
+if __name__ == "__main__":
+    youtube = get_auth_service()
+    main()
